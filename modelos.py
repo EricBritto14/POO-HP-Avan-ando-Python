@@ -1,3 +1,8 @@
+#Métodos Python Data Model, inicialização: __init__
+#Representação: __str__(string), __repr__ (representation, usado para mostrar como o objeto foi criado)
+#Containers e sequencia: __contains__, __iter__, __len__, __getitem__
+#Númericos: __add__, __sub__, __mul__, __mod__
+
 class Programa:
     def __init__(self, nome, ano):
         self._nome = nome.title()
@@ -25,11 +30,12 @@ class Programa:
 class Filme(Programa): #Entre parenteses assim para sinalizar herança
     def __init__(self, nome, ano, duracao):
         super().__init__(nome, ano)#Código para puxar a herança de Programa e ser usada em nome e ano, para pegar os getters e setters e o print
-    
+        self.duracao = duracao    
+
     #Pegando um método da classe mãe, e criando um polimorfismo para ele funcionar diferente em filme e serie, mostrando a duração q é coisa unica do filme, e temporada que é coisa única da série
     def __str__(self):#O __init__ pelo python sabe que esse método é um inicializador de objeto, agora o __str__ seria um método especial para representar a classe textualmente, pra não precisar usar print, e ficar mais pythonico o código 
        return f'Nome: {self._nome} - Ano: {self.ano} - Duração: {self.duracao} - Likes: {self._likes}' #Não esquecer de colocar os _ de protected nos que criados pela classe mãe estão protected
-     
+       
 
 class Serie(Programa):#Entre parenteses assim para sinalizar herança
     def __init__(self, nome, ano, temporadas):
@@ -40,10 +46,18 @@ class Serie(Programa):#Entre parenteses assim para sinalizar herança
     def __str__(self):#O __init__ pelo python sabe que esse método é um inicializador de objeto, agora o __str__ seria um método especial para representar a classe textualmente, pra não precisar usar print, e ficar mais pythonico o código 
        return f'Nome: {self._nome} - Ano: {self.ano} - Temporadas: {self.temporadas} - Likes: {self._likes}' #Não esquecer de colocar os _ de protected nos que criados pela classe mãe estão protected
 
-class Playlist(list):#Entre parenteses assim para sinalizar herança
+class Playlist:
     def __init__(self, nome, programas):
         self.nome = nome.title()
-        super().__init__(programas) #Código para puxar a herança de list e ser usada em programas, para transformar o valor passado em programas para list
+        self._programas = programas
+
+    #Método que representa o comportamento de uma sequencia que consegue ser iterável para usar for, for in
+    #A vantagem é que não precisar herdar nada de ngm, não precisa dizer que é daquele tipo, mas tem que se comportar como algo daquele tipo,  um objeto daquele tipo (duck type)
+    def __getitem__(self, item): #Função do python para a classe voltar a ser um iterável
+        return self._programas[item] #Retornando um itém para a lista de programa interno
+
+    def __len__(self):
+        return len(self._programas)
 
     #Código substituido pelo print(f'Tamanho da playlist é de: {len(playlist_fim_de_semana)}'), pois agora que herdamos da list transformando os programas em list, podemos usar o len e saber diretamente a quantidade, não precisando dessa def
     #def tamano(self):
@@ -66,7 +80,7 @@ atlanta.dar_likes()
 atlanta.dar_likes()
 
 filmes_e_series = [vingadores, atlanta, demolidor, tmep]
-playlist_fim_de_semana = Playlist('fim de semana', filmes_e_series)
+playlist_fim_de_semana = Playlist('fim de semana', filmes_e_series) 
 
 print(f'Tamanho da playlist é de: {len(playlist_fim_de_semana)}')
 
